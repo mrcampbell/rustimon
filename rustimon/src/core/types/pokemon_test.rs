@@ -1,5 +1,4 @@
-// #[cfg(test)]
-// use super::*;
+#[cfg(test)]
 
 use crate::core::types::{
     pokemon::{Pokemon, Species},
