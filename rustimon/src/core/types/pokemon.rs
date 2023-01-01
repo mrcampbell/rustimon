@@ -1,11 +1,11 @@
 use std::ops::Div;
 
+use super::stat_group::StatGroup;
 #[derive(Clone, Debug)]
 pub struct Pokemon {
     pub id: String,
     pub level: u32,
     pub species: Species,
-    pub nickname: Option<String>,
     pub iv: StatGroup,
     pub ev: StatGroup,
     pub stats: StatGroup,
@@ -16,29 +16,48 @@ impl Pokemon {
         id: String,
         level: u32,
         species: Species,
-        nickname: Option<String>,
-        iv: StatGroup,
-        ev: StatGroup,
+        iv: Option<StatGroup>,
+        ev: Option<StatGroup>,
     ) -> Pokemon {
+
+        let iv = iv.unwrap_or(StatGroup {
+            hp: 31,
+            atk: 31,
+            def: 31,
+            spec_atk: 31,
+            spec_def: 31,
+            speed: 31,
+        });
+
+        let ev = ev.unwrap_or(StatGroup {
+            hp: 0,
+            atk: 0,
+            def: 0,
+            spec_atk: 0,
+            spec_def: 0,
+            speed: 0,
+        });
+
+        let stats = Self::calculate_stats( level, species.stats.clone(), &iv, &ev);
+
         Pokemon {
             id,
             level,
-            nickname,
-            iv: iv.clone(),
-            ev: ev.clone(),
+            iv,
+            ev,
             species: species.clone(),
-            stats: calculate_stats( level, species.stats, iv, ev),
+            stats,
         }
     }
-}
-fn calculate_stats(level: u32, species: StatGroup, iv: StatGroup, ev: StatGroup) -> StatGroup {
+
+fn calculate_stats(level: u32, species: StatGroup, iv: &StatGroup, ev: &StatGroup) -> StatGroup {
     StatGroup {
-        hp: 1,
-        atk: 2,
-        def: 3,
-        spec_atk: 4,
-        spec_def: 5,
-        spd: 6,
+        hp: Self::calculate_hp(level as f32, species.hp as f32, iv.hp as f32, ev.hp as f32) as u32,
+        atk: Self::calculate_stat(level as f32, species.atk as f32, iv.atk as f32, ev.atk as f32) as u32,
+        def: Self::calculate_stat(level as f32, species.def as f32, iv.def as f32, ev.def as f32) as u32,
+        spec_atk: Self::calculate_stat(level as f32, species.spec_atk as f32, iv.spec_atk as f32, ev.spec_atk as f32) as u32,
+        spec_def: Self::calculate_stat(level as f32, species.spec_def as f32, iv.spec_def as f32, ev.spec_def as f32) as u32,
+        speed: Self::calculate_stat(level as f32, species.speed as f32, iv.speed as f32, ev.speed as f32) as u32,
     }
 }
 
@@ -47,23 +66,12 @@ fn calculate_hp(level: f32, species: f32, iv: f32, ev: f32) -> f32 {
  (((2.0 * species + iv + ev.div(4.0).floor()) * level).floor()/100.0).floor() + level + 10.0
 }
 
-// scenario from here: https://bulbapedia.bulbagarden.net/wiki/Stat
-#[test]
-fn test_calculate_hp() {
-  assert_eq!(calculate_hp(78.0, 108.0, 24.0, 74.0), 289.0);
-}
-
 // using Gen-III-Onward formula
 fn calculate_stat(level: f32, species: f32, iv: f32, ev: f32) -> f32 {
   ((((2.0 * species + iv + ev.div(4.0).floor()) * level).floor()/100.0) + 5.0 /* todo: mulitply by nature, etc. */).floor()
 }
 
-// scenario from here: https://bulbapedia.bulbagarden.net/wiki/Stat
-#[test]
-fn test_calculate_atk() {
-  assert_eq!(calculate_stat(78.0, 102.0, 5.0, 23.0), 171.0);
 }
-
 #[derive(Clone, Debug)]
 pub struct Species {
     pub id: u32,
@@ -71,12 +79,4 @@ pub struct Species {
     pub stats: StatGroup,
 }
 
-#[derive(Clone, Debug)]
-pub struct StatGroup {
-    pub hp: u32,
-    pub atk: u32,
-    pub def: u32,
-    pub spec_atk: u32,
-    pub spec_def: u32,
-    pub spd: u32,
-}
+

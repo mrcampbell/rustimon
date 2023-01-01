@@ -10,12 +10,12 @@ fn main() {
 }
 
 fn app(cx: Scope) -> Element {
-let x = rustimon::core::types::pokemon::StatGroup {hp: 1, atk: 2, def: 3, spec_atk: 4, spec_def: 5, spd: 6};
+let x = rustimon::core::types::pokemon::StatGroup {hp: 1, atk: 2, def: 3, spec_atk: 4, spec_def: 5, speed: 6};
     cx.render(rsx! (
         div {
             style: "text-align: center;",
             button {
-              class: "btn btn-success",
+              class: "btn btn-danger",
               "{x.atk}"
             }
             h1 { class: "bg-red-500", "🌗 Dioxus 🚀!" }
