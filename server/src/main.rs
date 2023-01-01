@@ -15,7 +15,7 @@ let x = rustimon::core::types::pokemon::StatGroup {hp: 1, atk: 2, def: 3, spec_a
         div {
             style: "text-align: center;",
             button {
-              class: "btn btn-warning",
+              class: "btn btn-success",
               "{x.atk}"
             }
             h1 { class: "bg-red-500", "🌗 Dioxus 🚀!" }
