@@ -1,9 +1,8 @@
 #[cfg(test)]
+use crate::core::types::{pokemon::Pokemon, stat_group::StatGroup};
+use crate::core::types::{species::Species, elemental_types::ElementalType};
 
-use crate::core::types::{
-    pokemon::{Pokemon, Species},
-    stat_group::StatGroup,
-};
+
 
 #[test]
 fn test_end_to_end() {
@@ -14,6 +13,7 @@ fn test_end_to_end() {
         Species {
             id: 0,
             name: "test".to_string(),
+            elemental_types: (ElementalType::Bug, Some(ElementalType::Poison)),
             stats: StatGroup {
                 hp: 108,
                 atk: 130,

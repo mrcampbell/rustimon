@@ -1,4 +1,4 @@
-use super::stat_group::StatGroup;
+use super::{stat_group::StatGroup, species::Species};
 use rand::{Rng, SeedableRng, rngs::StdRng};
 use std::ops::Div;
 
@@ -106,10 +106,4 @@ impl Pokemon {
     pub(crate) fn calculate_stat(level: f32, species: f32, iv: f32, ev: f32) -> f32 {
         ((((2.0 * species + iv + ev.div(4.0).floor()) * level).floor()/100.0) + 5.0 /* todo: mulitply by nature, etc. */).floor()
     }
-}
-#[derive(Clone, Debug)]
-pub struct Species {
-    pub id: u32,
-    pub name: String,
-    pub stats: StatGroup,
 }
